@@ -1,0 +1,13 @@
+input{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding-left: 5px;
+}
+.authentication{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
