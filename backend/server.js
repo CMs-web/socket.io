@@ -16,7 +16,7 @@ const io = socketIO(server, { cors: { origin: "*" } });
 app.use(express.json());
 app.use(cors());
 
-// MongoDB connection
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -35,13 +35,7 @@ const MessageSchema = new mongoose.Schema({
 
 const Message = mongoose.model("Message", MessageSchema);
 
-// Sample users
-const users = [
-  { id: 1, username: "user1", password: "password1" },
-  { id: 2, username: "user2", password: "password2" },
-];
 
-// JWT secret
 const JWT_SECRET = "secretkey";
 
 //user Register
@@ -54,7 +48,7 @@ app.post("/register", async (req, res) => {
     return res.status(400).json({ message: "User already exists" });
   }
 
-  // Hash password
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Create new user
@@ -83,7 +77,7 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Compare the plain password with the hashed password
+    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -101,27 +95,8 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Authentication endpoint
-// app.post("/login", async(req, res) => {
-//     const { email, password } = req.body;
 
-//   const user = await User.create({email, password})
-
-// //   const user = users.find(
-// //     (u) => u.username === username && u.password === password
-// //   );
-
-//   if (!user) {
-//     return res.status(401).json({ message: "Invalid credentials" });
-//   }
-
-//   const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, {
-//     expiresIn: "1h",
-//   });
-//   res.json({ token });
-// });
-
-// Middleware to verify JWT
+// Middleware of  JWT
 const authenticateToken = (socket, next) => {
   const token = socket.handshake.auth.token;
   if (token) {
@@ -135,13 +110,12 @@ const authenticateToken = (socket, next) => {
   }
 };
 
-// Socket.io middleware for authentication
+// Socket.io middleware 
 io.use(authenticateToken);
 
 io.on("connection", (socket) => {
   console.log(`${socket.user.username} connected`);
 
-  // Emit all messages on connection
   Message.find().then((messages) => {
     socket.emit("previousMessages", messages);
   });

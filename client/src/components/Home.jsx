@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+
+import { useSelector } from "react-redux";
 import { loginuser } from "../../features/userSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -27,24 +27,7 @@ function Home() {
       socket.auth.token = response;
       socket.connect();
     }
-
-    // /// old code
-
-    // try {
-    //   const res = await axios.post("http://localhost:5000/login", {
-    //     username,
-    //     password,
-    //   });
-    //   localStorage.setItem("token", res.data.token);
-    //   setIsAuthenticated(true);
-    //   socket.auth.token = res.data.token;
-    //   socket.connect();
-    // } catch (err) {
-    //   console.error(
-    //     "Login failed",
-    //     err.response ? err.response.data : err.message
-    //   );
-    // }
+   
   };
 
   // listen for previous and incoming msg
